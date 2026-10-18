@@ -216,6 +216,110 @@ export const PORTFOLIO_DATA = {
       previewImage: "/assets/posters/poster-4.jpg",
       featured: true,
     },
+    {
+      id: "ai-voice-notes",
+      title: "Still Listening To Your Own Voice Notes? Let AI Turn Them Into Tasks",
+      client: "Urooj Fatima • AI Productivity",
+      category: "AI Tool Branding & Social Post",
+      year: "2026",
+      tagline: "Futuristic robot in suit demonstrating audio-to-action agent workflows.",
+      description:
+        "Designed by Urooj Fatima. Clean futuristic grid aesthetic showcasing AI transforming unorganized voice memos into structured task boards.",
+      overview:
+        "Designed to communicate voice-to-action automation with a crisp corporate-AI character and high-conversion call-to-action.",
+      challenge:
+        "Making personal voice note chaos feel instantly solvable through autonomous AI task agents.",
+      solution:
+        "Juxtaposed a sleek headphone-wearing business robot with a clean blue-lit grid and sharp dual-tone headline typography.",
+      deliverables: ["Graphic Design", "Social Media Poster", "3D Bot Character", "Futuristic Grid Layout"],
+      metrics: [
+        { label: "CTA", value: "Dm 'AI'" },
+        { label: "Tone", value: "Futuristic Clean" },
+        { label: "Platform", value: "Instagram / LinkedIn" },
+      ],
+      accentColor: "#2563EB",
+      gradient: "linear-gradient(135deg, #2563EB 0%, #38BDF8 100%)",
+      previewImage: "/assets/posters/poster-voice-notes.png",
+      featured: true,
+    },
+    {
+      id: "octopus-multi-agent",
+      title: "You Don't Have To Carry It All — Let Your Agent Hold Some",
+      client: "Urooj Fatima • Agentic Workflows",
+      category: "Multi-Agent Automation & 3D Metaphor",
+      year: "2026",
+      tagline: "Eight arms, one brain. 3D character demonstrating autonomous multi-task execution.",
+      description:
+        "Designed by Urooj Fatima. High-impact dark blue 3D visual featuring an octopus handling multi-threaded workloads simultaneously.",
+      overview:
+        "Visualizing multi-agent parallel execution where one agent coordinates research, files, messaging, and reporting at once.",
+      challenge:
+        "Explaining asynchronous multi-tool execution in a visually memorable and instantly relatable manner.",
+      solution:
+        "Designed a tactile 3D blue octopus holding a laptop, folders, stylus, smartphone, and tablet with hand-drawn annotations.",
+      deliverables: ["3D Mascot Design", "Dark Stage Lighting", "Feature Mapping", "Conversion Poster"],
+      metrics: [
+        { label: "CTA", value: "Dm 'OCTOPUS'" },
+        { label: "Theme", value: "Multi-Agent 3D" },
+        { label: "Focus", value: "Parallel Automation" },
+      ],
+      accentColor: "#1D4ED8",
+      gradient: "linear-gradient(135deg, #1D4ED8 0%, #3B82F6 100%)",
+      previewImage: "/assets/posters/poster-octopus.jpg",
+      featured: true,
+    },
+    {
+      id: "lead-ghosted-followup",
+      title: "Lead Ghosted You? Let AI Follow Up",
+      client: "Urooj Fatima • Sales Automation",
+      category: "Conversion Marketing & CRM Automation",
+      year: "2026",
+      tagline: "Glowing UI timeline depicting automated multi-touch lead recovery.",
+      description:
+        "Designed by Urooj Fatima. Neon blue glowing dashboard cards showcasing Day 1, Day 3, and Day 7 follow-up sequences.",
+      overview:
+        "Demonstrating autonomous lead nurturing pipelines that revive cold leads and book meetings without manual outreach.",
+      challenge:
+        "Illustrating an automated follow-up schedule without making the graphic feel like an administrative spreadsheet.",
+      solution:
+        "Combined a dynamic levitating 3D bot with glowing glassmorphism status cards connected by electric blue energy trails.",
+      deliverables: ["SaaS Product Marketing", "Glowing UI Badges", "3D Tech Mascot", "B2B Social Campaign"],
+      metrics: [
+        { label: "CTA", value: "Dm 'LEAD'" },
+        { label: "Style", value: "Glowing Glass UI" },
+        { label: "Channel", value: "Sales Pipeline" },
+      ],
+      accentColor: "#0284C7",
+      gradient: "linear-gradient(135deg, #0284C7 0%, #38BDF8 100%)",
+      previewImage: "/assets/posters/poster-lead-followup.jpg",
+      featured: true,
+    },
+    {
+      id: "shape-ai-future",
+      title: "Don't Just Follow AI Trends — Be The One Shaping The Future",
+      client: "Urooj Fatima • Thought Leadership",
+      category: "Editorial Concept & Personal Branding",
+      year: "2026",
+      tagline: "Stand out from the crowd: contrasting blue umbrella visual metaphor.",
+      description:
+        "Designed by Urooj Fatima. Striking contrast between monochromatic conformity and vibrant AI innovation leadership.",
+      overview:
+        "An inspirational brand identity visual reinforcing proactive leadership in AI adoption rather than passive trend following.",
+      challenge:
+        "Creating an emotive, editorial-grade visual metaphor that inspires action and reinforces authority.",
+      solution:
+        "Rendered a smiling robot holding a vibrant cobalt blue umbrella standing out against an ocean of rainy black umbrellas.",
+      deliverables: ["Visual Metaphor", "Grid Composition", "Editorial Brand Direction", "Leadership Campaign"],
+      metrics: [
+        { label: "Theme", value: "Future Leadership" },
+        { label: "Composition", value: "Color Contrast" },
+        { label: "Impact", value: "Viral Resonance" },
+      ],
+      accentColor: "#3B82F6",
+      gradient: "linear-gradient(135deg, #3B82F6 0%, #60A5FA 100%)",
+      previewImage: "/assets/posters/poster-ai-trends.jpg",
+      featured: true,
+    },
   ],
 
   services: [

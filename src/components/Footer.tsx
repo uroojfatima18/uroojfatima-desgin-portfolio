@@ -33,6 +33,7 @@ export default function Footer() {
             <ul className="converto-links">
               <li><a href="#about">Home</a></li>
               <li><a href="#posters">Posters</a></li>
+              <li><a href="#banners">Banners</a></li>
               <li><a href="#slides">Slides</a></li>
               <li><a href="#workflow">Workflow</a></li>
             </ul>
@@ -43,6 +44,7 @@ export default function Footer() {
             <h4 className="converto-col-title">Focus</h4>
             <ul className="converto-links">
               <li><a href="#posters">Social Posters</a></li>
+              <li><a href="#banners">LinkedIn Banners</a></li>
               <li><a href="#slides">Slide Decks</a></li>
               <li><a href="#ai-video">AI Video</a></li>
               <li><a href="#workflow">Process</a></li>

@@ -1457,7 +1457,7 @@ button {
   display: flex;
   gap: 24px;
   width: max-content;
-  animation: postersMarquee 26s linear infinite;
+  animation: postersMarquee 42s linear infinite;
 }
 
 .posters-marquee-container:hover .posters-marquee-track {
@@ -1500,6 +1500,36 @@ button {
   .poster-marquee-item {
     width: 260px;
     height: 310px;
+  }
+}
+
+/* =========================================================
+   LINKEDIN BANNER SHOWCASE CARD
+   ========================================================= */
+.linkedin-banner-card {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid var(--border-light);
+  background: #FFFFFF;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06), 0 2px 8px rgba(0, 0, 0, 0.03);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease;
+  cursor: pointer;
+}
+
+.linkedin-banner-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.12), 0 0 30px rgba(88, 53, 229, 0.12) !important;
+}
+
+.linkedin-banner-card:hover .banner-expand-hint {
+  background: #5835E5 !important;
+  border-color: #5835E5 !important;
+}
+
+@media (max-width: 640px) {
+  .linkedin-banner-card .banner-details-row {
+    padding: 14px 16px !important;
   }
 }
 

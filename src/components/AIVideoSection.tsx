@@ -71,8 +71,20 @@ const YOUTUBE_VIDEOS: VideoItem[] = [
   },
 ];
 
-// Vertical (TikTok / 9:16) Reels Row
+// Vertical (TikTok / 9:16) Reels Row - 3 Videos Only
 const TIKTOK_VIDEOS: VideoItem[] = [
+  {
+    id: "v-ai-slop",
+    title: "AI Slop",
+    category: "Own Profile",
+    badge: "Own Profile",
+    badgeType: "profile",
+    format: "vertical",
+    description: "Short-form creative commentary • 9:16 AI Storytelling Reel",
+    src: `${LFS_BASE}/assets/videos/AI-Story%20telling%20videos/AI%20Slop.mp4`,
+    previewSrc: "/assets/videos/previews/ai_slop_preview.mp4",
+    poster: "/assets/videos/AI-Story%20telling%20videos/ai_slop_poster.jpg",
+  },
   {
     id: "v1-tiktok",
     title: "Variant 1 TikTok",

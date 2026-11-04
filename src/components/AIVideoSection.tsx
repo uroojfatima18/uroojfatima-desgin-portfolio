@@ -16,6 +16,9 @@ interface VideoItem {
   poster: string;
 }
 
+// Media CDN URL helper for GitHub LFS videos deployed on Vercel
+const LFS_BASE = "https://media.githubusercontent.com/media/uroojfatima18/uroojfatima-desgin-portfolio/main/public";
+
 const VIDEOS: VideoItem[] = [
   {
     id: "v1-profile",
@@ -37,7 +40,7 @@ const VIDEOS: VideoItem[] = [
     badgeType: "client",
     format: "vertical",
     description: "Short-form vertical storytelling • 9:16 TikTok Reel edit",
-    src: "/assets/videos/AI-Story%20telling%20videos/variant%201%20tiktok.mp4",
+    src: `${LFS_BASE}/assets/videos/AI-Story%20telling%20videos/variant%201%20tiktok.mp4`,
     previewSrc: "/assets/videos/previews/v1_tiktok_preview.mp4",
     poster: "/assets/videos/AI-Story%20telling%20videos/v1_tiktok_poster.jpg",
   },
@@ -49,7 +52,7 @@ const VIDEOS: VideoItem[] = [
     badgeType: "client",
     format: "horizontal",
     description: "Long-form storytelling video • 16:9 YouTube edit",
-    src: "/assets/videos/AI-Story%20telling%20videos/variant%201%20yt.mp4",
+    src: `${LFS_BASE}/assets/videos/AI-Story%20telling%20videos/variant%201%20yt.mp4`,
     previewSrc: "/assets/videos/previews/v1_yt_preview.mp4",
     poster: "/assets/videos/AI-Story%20telling%20videos/v1_yt_poster.jpg",
   },
@@ -61,7 +64,7 @@ const VIDEOS: VideoItem[] = [
     badgeType: "client",
     format: "vertical",
     description: "Short-form vertical storytelling • 9:16 TikTok Reel edit",
-    src: "/assets/videos/AI-Story%20telling%20videos/variant%202%20tiktok.mp4",
+    src: `${LFS_BASE}/assets/videos/AI-Story%20telling%20videos/variant%202%20tiktok.mp4`,
     previewSrc: "/assets/videos/previews/v2_tiktok_preview.mp4",
     poster: "/assets/videos/AI-Story%20telling%20videos/v2_tiktok_poster.jpg",
   },
@@ -73,7 +76,7 @@ const VIDEOS: VideoItem[] = [
     badgeType: "client",
     format: "horizontal",
     description: "Long-form storytelling video • 16:9 YouTube edit",
-    src: "/assets/videos/AI-Story%20telling%20videos/variant%202%20yt.mp4",
+    src: `${LFS_BASE}/assets/videos/AI-Story%20telling%20videos/variant%202%20yt.mp4`,
     previewSrc: "/assets/videos/previews/v2_yt_preview.mp4",
     poster: "/assets/videos/AI-Story%20telling%20videos/v2_yt_poster.jpg",
   },
@@ -100,18 +103,20 @@ export default function AIVideoSection() {
   // Repeat items for seamless horizontal scroll
   const loopedVideos = [...VIDEOS, ...VIDEOS];
 
-  // When modal opens, make sure full video plays with sound
+  // When modal opens, auto-play with sound handling
   useEffect(() => {
     if (activeModalVideo && modalVideoRef.current) {
-      modalVideoRef.current.currentTime = 0;
-      modalVideoRef.current.muted = isMuted;
-      modalVideoRef.current.play().catch(() => {
-        if (modalVideoRef.current) {
-          modalVideoRef.current.muted = true;
+      const v = modalVideoRef.current;
+      v.muted = isMuted;
+      const playPromise = v.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {
+          // If browser restricts unmuted autoplay, mute and play
+          v.muted = true;
           setIsMuted(true);
-          modalVideoRef.current.play().catch(() => {});
-        }
-      });
+          v.play().catch(() => {});
+        });
+      }
     }
   }, [activeModalVideo]);
 
@@ -122,6 +127,11 @@ export default function AIVideoSection() {
       modalVideoRef.current.muted = nextMuted;
       setIsMuted(nextMuted);
     }
+  };
+
+  const handleCardClick = (video: VideoItem) => {
+    setIsMuted(false);
+    setActiveModalVideo(video);
   };
 
   return (
@@ -177,11 +187,9 @@ export default function AIVideoSection() {
                 className={`video-marquee-card ${isVertical ? "is-vertical" : "is-horizontal"}`}
                 style={{
                   width: isVertical ? "270px" : "420px",
+                  cursor: "pointer",
                 }}
-                onClick={() => {
-                  setIsMuted(false);
-                  setActiveModalVideo(video);
-                }}
+                onClick={() => handleCardClick(video)}
               >
                 {/* Video Preview Box */}
                 <div
@@ -189,6 +197,7 @@ export default function AIVideoSection() {
                   style={{
                     aspectRatio: isVertical ? "9 / 16" : "16 / 9",
                     maxHeight: isVertical ? "440px" : "240px",
+                    position: "relative",
                   }}
                 >
                   <video
@@ -200,7 +209,10 @@ export default function AIVideoSection() {
                     autoPlay
                     preload="auto"
                     style={{
+                      width: "100%",
+                      height: "100%",
                       objectFit: "cover",
+                      pointerEvents: "none",
                     }}
                   />
 
@@ -227,6 +239,7 @@ export default function AIVideoSection() {
                       justifyContent: "space-between",
                       gap: "6px",
                       zIndex: 3,
+                      pointerEvents: "none",
                     }}
                   >
                     {/* Category Pill Tag */}
@@ -290,6 +303,7 @@ export default function AIVideoSection() {
                       alignItems: "center",
                       justifyContent: "center",
                       zIndex: 2,
+                      pointerEvents: "none",
                     }}
                   >
                     <div
@@ -328,6 +342,7 @@ export default function AIVideoSection() {
                       alignItems: "center",
                       gap: "4px",
                       zIndex: 3,
+                      pointerEvents: "none",
                     }}
                   >
                     <Maximize2 size={11} />
@@ -403,8 +418,8 @@ export default function AIVideoSection() {
           style={{
             position: "fixed",
             inset: 0,
-            zIndex: 9999,
-            background: "rgba(10, 10, 14, 0.9)",
+            zIndex: 99999,
+            background: "rgba(10, 10, 14, 0.92)",
             backdropFilter: "blur(14px)",
             WebkitBackdropFilter: "blur(14px)",
             display: "flex",
@@ -419,13 +434,12 @@ export default function AIVideoSection() {
             style={{
               position: "relative",
               width: "100%",
-              maxWidth: activeModalVideo.format === "vertical" ? "440px" : "880px",
+              maxWidth: activeModalVideo.format === "vertical" ? "420px" : "880px",
               background: "#121218",
               borderRadius: "24px",
               overflow: "hidden",
-              border: "1px solid rgba(255, 255, 255, 0.12)",
-              boxShadow: "0 30px 80px rgba(0, 0, 0, 0.75)",
-              transition: "max-width 0.3s ease",
+              border: "1px solid rgba(255, 255, 255, 0.14)",
+              boxShadow: "0 30px 80px rgba(0, 0, 0, 0.8)",
             }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -435,7 +449,7 @@ export default function AIVideoSection() {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
-                padding: "16px 20px",
+                padding: "14px 18px",
                 borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
                 background: "rgba(255, 255, 255, 0.03)",
               }}
@@ -539,7 +553,7 @@ export default function AIVideoSection() {
                 position: "relative",
                 width: "100%",
                 aspectRatio: activeModalVideo.format === "vertical" ? "9 / 16" : "16 / 9",
-                maxHeight: activeModalVideo.format === "vertical" ? "75vh" : "60vh",
+                maxHeight: activeModalVideo.format === "vertical" ? "75vh" : "62vh",
                 background: "#000000",
                 display: "flex",
                 alignItems: "center",
@@ -548,22 +562,29 @@ export default function AIVideoSection() {
             >
               <video
                 ref={modalVideoRef}
+                key={activeModalVideo.src}
                 src={activeModalVideo.src}
                 poster={activeModalVideo.poster}
                 controls
                 playsInline
+                autoPlay
+                preload="auto"
                 style={{
                   width: "100%",
                   height: "100%",
                   objectFit: "contain",
                 }}
-              />
+              >
+                {/* Fallback to preview stream if CDN is delayed */}
+                <source src={activeModalVideo.src} type="video/mp4" />
+                <source src={activeModalVideo.previewSrc} type="video/mp4" />
+              </video>
             </div>
 
             {/* Modal Footer Description */}
             <div
               style={{
-                padding: "14px 20px",
+                padding: "14px 18px",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",

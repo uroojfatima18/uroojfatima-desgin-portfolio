@@ -152,13 +152,14 @@ export default function AIVideoSection() {
     setActiveModalVideo(video);
   };
 
-  const renderCard = (video: VideoItem, idx: number) => {
+  const renderCard = (video: VideoItem, originalIndex: number, uniqueKey: string) => {
     const isClient = video.badgeType === "client";
     const isVertical = video.format === "vertical";
+    const displayNumber = String(originalIndex + 1).padStart(2, "0");
 
     return (
       <div
-        key={`${video.id}-${idx}`}
+        key={uniqueKey}
         className={`video-marquee-card ${isVertical ? "is-vertical" : "is-horizontal"}`}
         style={{
           width: isVertical ? "260px" : "410px",
@@ -202,7 +203,7 @@ export default function AIVideoSection() {
             }}
           />
 
-          {/* Badges Bar (Category Pill + Format Tag) */}
+          {/* Badges Bar (Number Pill + Category Pill + Format Tag) */}
           <div
             style={{
               position: "absolute",
@@ -217,30 +218,57 @@ export default function AIVideoSection() {
               pointerEvents: "none",
             }}
           >
-            {/* Category Pill Tag */}
-            <div
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "5px",
-                padding: "5px 11px",
-                borderRadius: "var(--radius-full)",
-                fontSize: "11px",
-                fontWeight: 700,
-                letterSpacing: "0.03em",
-                backdropFilter: "blur(12px)",
-                WebkitBackdropFilter: "blur(12px)",
-                background: isClient
-                  ? "linear-gradient(135deg, rgba(16, 185, 129, 0.92), rgba(5, 150, 105, 0.92))"
-                  : "linear-gradient(135deg, rgba(88, 53, 229, 0.92), rgba(124, 58, 237, 0.92))",
-                color: "#FFFFFF",
-                boxShadow: isClient
-                  ? "0 4px 14px rgba(16, 185, 129, 0.35)"
-                  : "0 4px 14px rgba(88, 53, 229, 0.35)",
-              }}
-            >
-              {isClient ? <Briefcase size={12} /> : <UserCheck size={12} />}
-              <span>{video.badge}</span>
+            {/* Left side: Video Number Badge + Category Pill */}
+            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+              {/* Premium Number Badge */}
+              <div
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: "24px",
+                  height: "24px",
+                  borderRadius: "6px",
+                  fontSize: "11px",
+                  fontWeight: 800,
+                  fontFamily: "var(--font-mono, monospace)",
+                  letterSpacing: "0.02em",
+                  backdropFilter: "blur(12px)",
+                  WebkitBackdropFilter: "blur(12px)",
+                  background: "rgba(10, 10, 14, 0.82)",
+                  color: "#FFFFFF",
+                  border: "1px solid rgba(255, 255, 255, 0.22)",
+                  boxShadow: "0 2px 8px rgba(0, 0, 0, 0.4)",
+                }}
+              >
+                {displayNumber}
+              </div>
+
+              {/* Category Pill Tag */}
+              <div
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "5px",
+                  padding: "5px 11px",
+                  borderRadius: "var(--radius-full)",
+                  fontSize: "11px",
+                  fontWeight: 700,
+                  letterSpacing: "0.03em",
+                  backdropFilter: "blur(12px)",
+                  WebkitBackdropFilter: "blur(12px)",
+                  background: isClient
+                    ? "linear-gradient(135deg, rgba(16, 185, 129, 0.92), rgba(5, 150, 105, 0.92))"
+                    : "linear-gradient(135deg, rgba(88, 53, 229, 0.92), rgba(124, 58, 237, 0.92))",
+                  color: "#FFFFFF",
+                  boxShadow: isClient
+                    ? "0 4px 14px rgba(16, 185, 129, 0.35)"
+                    : "0 4px 14px rgba(88, 53, 229, 0.35)",
+                }}
+              >
+                {isClient ? <Briefcase size={12} /> : <UserCheck size={12} />}
+                <span>{video.badge}</span>
+              </div>
             </div>
 
             {/* Format Tag */}
@@ -433,7 +461,9 @@ export default function AIVideoSection() {
               alignItems: "stretch",
             }}
           >
-            {loopedYTVideos.map((video, idx) => renderCard(video, idx))}
+            {loopedYTVideos.map((video, idx) =>
+              renderCard(video, idx % YOUTUBE_VIDEOS.length, `yt-${video.id}-${idx}`)
+            )}
           </div>
         </div>
       </div>
@@ -444,6 +474,19 @@ export default function AIVideoSection() {
           <Smartphone size={15} style={{ color: "#38BDF8" }} />
           <span style={{ fontSize: "13px", fontWeight: 700, color: "var(--text-main)", letterSpacing: "0.02em" }}>
             TikTok &amp; Short-Form Reels (9:16)
+          </span>
+          <span
+            style={{
+              fontSize: "11px",
+              fontWeight: 700,
+              color: "#38BDF8",
+              background: "rgba(56, 189, 248, 0.12)",
+              padding: "2px 8px",
+              borderRadius: "12px",
+              marginLeft: "4px",
+            }}
+          >
+            3 Reels
           </span>
         </div>
         <div
@@ -460,7 +503,9 @@ export default function AIVideoSection() {
               animationDuration: "32s",
             }}
           >
-            {loopedTTVideos.map((video, idx) => renderCard(video, idx))}
+            {loopedTTVideos.map((video, idx) =>
+              renderCard(video, idx % TIKTOK_VIDEOS.length, `tt-${video.id}-${idx}`)
+            )}
           </div>
         </div>
       </div>

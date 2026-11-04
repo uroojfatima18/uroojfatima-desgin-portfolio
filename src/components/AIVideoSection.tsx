@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Play, Maximize2, X, Volume2, VolumeX, Briefcase, UserCheck } from "lucide-react";
+import { Play, Maximize2, X, Volume2, VolumeX, Briefcase, UserCheck, Smartphone, Monitor } from "lucide-react";
 
 interface VideoItem {
   id: string;
@@ -9,6 +9,7 @@ interface VideoItem {
   category: "Own Profile" | "Client Work";
   badge: string;
   badgeType: "profile" | "client";
+  format: "vertical" | "horizontal";
   description: string;
   src: string;
   previewSrc: string;
@@ -22,6 +23,7 @@ const VIDEOS: VideoItem[] = [
     category: "Own Profile",
     badge: "Own Profile",
     badgeType: "profile",
+    format: "horizontal",
     description: "Generative AI video styling, digital identity & cinematic motion",
     src: "/assets/videos/final-without-subtitle.mp4",
     previewSrc: "/assets/videos/previews/v1_profile_preview.mp4",
@@ -30,10 +32,11 @@ const VIDEOS: VideoItem[] = [
   {
     id: "v1-tiktok",
     title: "Variant 1 TikTok",
-    category: "Own Profile",
-    badge: "Own Profile",
-    badgeType: "profile",
-    description: "Short-form storytelling video • TikTok edit",
+    category: "Client Work",
+    badge: "Client Work",
+    badgeType: "client",
+    format: "vertical",
+    description: "Short-form vertical storytelling • 9:16 TikTok Reel edit",
     src: "/assets/videos/AI-Story%20telling%20videos/variant%201%20tiktok.mp4",
     previewSrc: "/assets/videos/previews/v1_tiktok_preview.mp4",
     poster: "/assets/videos/AI-Story%20telling%20videos/v1_tiktok_poster.jpg",
@@ -41,10 +44,11 @@ const VIDEOS: VideoItem[] = [
   {
     id: "v1-youtube",
     title: "Variant 1 YouTube",
-    category: "Own Profile",
-    badge: "Own Profile",
-    badgeType: "profile",
-    description: "Long-form storytelling video • YouTube edit",
+    category: "Client Work",
+    badge: "Client Work",
+    badgeType: "client",
+    format: "horizontal",
+    description: "Long-form storytelling video • 16:9 YouTube edit",
     src: "/assets/videos/AI-Story%20telling%20videos/variant%201%20yt.mp4",
     previewSrc: "/assets/videos/previews/v1_yt_preview.mp4",
     poster: "/assets/videos/AI-Story%20telling%20videos/v1_yt_poster.jpg",
@@ -52,10 +56,11 @@ const VIDEOS: VideoItem[] = [
   {
     id: "v2-tiktok",
     title: "Variant 2 TikTok",
-    category: "Own Profile",
-    badge: "Own Profile",
-    badgeType: "profile",
-    description: "Short-form storytelling video • TikTok edit",
+    category: "Client Work",
+    badge: "Client Work",
+    badgeType: "client",
+    format: "vertical",
+    description: "Short-form vertical storytelling • 9:16 TikTok Reel edit",
     src: "/assets/videos/AI-Story%20telling%20videos/variant%202%20tiktok.mp4",
     previewSrc: "/assets/videos/previews/v2_tiktok_preview.mp4",
     poster: "/assets/videos/AI-Story%20telling%20videos/v2_tiktok_poster.jpg",
@@ -63,10 +68,11 @@ const VIDEOS: VideoItem[] = [
   {
     id: "v3-youtube",
     title: "Variant 2 YouTube",
-    category: "Own Profile",
-    badge: "Own Profile",
-    badgeType: "profile",
-    description: "Long-form storytelling video • YouTube edit",
+    category: "Client Work",
+    badge: "Client Work",
+    badgeType: "client",
+    format: "horizontal",
+    description: "Long-form storytelling video • 16:9 YouTube edit",
     src: "/assets/videos/AI-Story%20telling%20videos/variant%202%20yt.mp4",
     previewSrc: "/assets/videos/previews/v2_yt_preview.mp4",
     poster: "/assets/videos/AI-Story%20telling%20videos/v2_yt_poster.jpg",
@@ -77,6 +83,7 @@ const VIDEOS: VideoItem[] = [
     category: "Own Profile",
     badge: "Own Profile",
     badgeType: "profile",
+    format: "horizontal",
     description: "Prompt  -> Context -> Loop -> Graph -> Harness",
     src: "/assets/videos/prompt-engineering.mp4",
     previewSrc: "/assets/videos/previews/v4_profile_preview.mp4",
@@ -99,7 +106,6 @@ export default function AIVideoSection() {
       modalVideoRef.current.currentTime = 0;
       modalVideoRef.current.muted = isMuted;
       modalVideoRef.current.play().catch(() => {
-        // Fallback if browser requires user interaction for unmuted audio
         if (modalVideoRef.current) {
           modalVideoRef.current.muted = true;
           setIsMuted(true);
@@ -140,7 +146,7 @@ export default function AIVideoSection() {
             </span>
             <span style={{ fontSize: "12px", color: "var(--text-light)" }}>•</span>
             <span style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 500 }}>
-              Horizontal Reel
+              Reels &amp; YouTube Showcase
             </span>
           </div>
           <h2 className="section-title">AI VIDEO GENERATION</h2>
@@ -157,21 +163,34 @@ export default function AIVideoSection() {
           className="videos-marquee-track"
           style={{
             animationPlayState: isHoverPaused ? "paused" : "running",
+            display: "flex",
+            alignItems: "stretch",
           }}
         >
           {loopedVideos.map((video, idx) => {
             const isClient = video.badgeType === "client";
+            const isVertical = video.format === "vertical";
+
             return (
               <div
                 key={`${video.id}-${idx}`}
-                className="video-marquee-card"
+                className={`video-marquee-card ${isVertical ? "is-vertical" : "is-horizontal"}`}
+                style={{
+                  width: isVertical ? "270px" : "420px",
+                }}
                 onClick={() => {
                   setIsMuted(false);
                   setActiveModalVideo(video);
                 }}
               >
                 {/* Video Preview Box */}
-                <div className="video-card-screen-wrap group">
+                <div
+                  className="video-card-screen-wrap group"
+                  style={{
+                    aspectRatio: isVertical ? "9 / 16" : "16 / 9",
+                    maxHeight: isVertical ? "440px" : "240px",
+                  }}
+                >
                   <video
                     src={video.previewSrc}
                     poster={video.poster}
@@ -180,6 +199,9 @@ export default function AIVideoSection() {
                     playsInline
                     autoPlay
                     preload="auto"
+                    style={{
+                      objectFit: "cover",
+                    }}
                   />
 
                   {/* Dark gradient vignette overlay */}
@@ -188,39 +210,75 @@ export default function AIVideoSection() {
                       position: "absolute",
                       inset: 0,
                       background:
-                        "linear-gradient(to top, rgba(14, 14, 18, 0.75) 0%, rgba(14, 14, 18, 0.05) 50%, rgba(14, 14, 18, 0.35) 100%)",
+                        "linear-gradient(to top, rgba(14, 14, 18, 0.8) 0%, rgba(14, 14, 18, 0.05) 50%, rgba(14, 14, 18, 0.4) 100%)",
                       pointerEvents: "none",
                     }}
                   />
 
-                  {/* Category Pill Tag */}
+                  {/* Badges Bar (Category Pill + Format Tag) */}
                   <div
                     style={{
                       position: "absolute",
-                      top: "14px",
-                      left: "14px",
-                      display: "inline-flex",
+                      top: "12px",
+                      left: "12px",
+                      right: "12px",
+                      display: "flex",
                       alignItems: "center",
+                      justifyContent: "space-between",
                       gap: "6px",
-                      padding: "5px 12px",
-                      borderRadius: "var(--radius-full)",
-                      fontSize: "11px",
-                      fontWeight: 700,
-                      letterSpacing: "0.03em",
-                      backdropFilter: "blur(12px)",
-                      WebkitBackdropFilter: "blur(12px)",
-                      background: isClient
-                        ? "linear-gradient(135deg, rgba(16, 185, 129, 0.9), rgba(5, 150, 105, 0.9))"
-                        : "linear-gradient(135deg, rgba(88, 53, 229, 0.9), rgba(124, 58, 237, 0.9))",
-                      color: "#FFFFFF",
-                      boxShadow: isClient
-                        ? "0 4px 14px rgba(16, 185, 129, 0.35)"
-                        : "0 4px 14px rgba(88, 53, 229, 0.35)",
                       zIndex: 3,
                     }}
                   >
-                    {isClient ? <Briefcase size={12} /> : <UserCheck size={12} />}
-                    <span>{video.badge}</span>
+                    {/* Category Pill Tag */}
+                    <div
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "5px",
+                        padding: "5px 11px",
+                        borderRadius: "var(--radius-full)",
+                        fontSize: "11px",
+                        fontWeight: 700,
+                        letterSpacing: "0.03em",
+                        backdropFilter: "blur(12px)",
+                        WebkitBackdropFilter: "blur(12px)",
+                        background: isClient
+                          ? "linear-gradient(135deg, rgba(16, 185, 129, 0.92), rgba(5, 150, 105, 0.92))"
+                          : "linear-gradient(135deg, rgba(88, 53, 229, 0.92), rgba(124, 58, 237, 0.92))",
+                        color: "#FFFFFF",
+                        boxShadow: isClient
+                          ? "0 4px 14px rgba(16, 185, 129, 0.35)"
+                          : "0 4px 14px rgba(88, 53, 229, 0.35)",
+                      }}
+                    >
+                      {isClient ? <Briefcase size={12} /> : <UserCheck size={12} />}
+                      <span>{video.badge}</span>
+                    </div>
+
+                    {/* Format Tag (TikTok Reel vs YouTube) */}
+                    <div
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "4px",
+                        padding: "4px 9px",
+                        borderRadius: "6px",
+                        fontSize: "10px",
+                        fontWeight: 700,
+                        letterSpacing: "0.04em",
+                        textTransform: "uppercase",
+                        backdropFilter: "blur(10px)",
+                        WebkitBackdropFilter: "blur(10px)",
+                        background: isVertical ? "rgba(0, 0, 0, 0.7)" : "rgba(0, 0, 0, 0.6)",
+                        color: isVertical ? "#38BDF8" : "#FBBF24",
+                        border: isVertical
+                          ? "1px solid rgba(56, 189, 248, 0.35)"
+                          : "1px solid rgba(251, 191, 36, 0.35)",
+                      }}
+                    >
+                      {isVertical ? <Smartphone size={11} /> : <Monitor size={11} />}
+                      <span>{isVertical ? "9:16 Reel" : "16:9 YT"}</span>
+                    </div>
                   </div>
 
                   {/* Floating Play Icon Overlay */}
@@ -245,7 +303,7 @@ export default function AIVideoSection() {
                         alignItems: "center",
                         justifyContent: "center",
                         color: "#0E0E0E",
-                        boxShadow: "0 8px 24px rgba(0, 0, 0, 0.3)",
+                        boxShadow: "0 8px 24px rgba(0, 0, 0, 0.35)",
                         transition: "all 0.25s ease",
                       }}
                     >
@@ -257,8 +315,8 @@ export default function AIVideoSection() {
                   <div
                     style={{
                       position: "absolute",
-                      bottom: "12px",
-                      right: "12px",
+                      bottom: "10px",
+                      right: "10px",
                       background: "rgba(0, 0, 0, 0.65)",
                       backdropFilter: "blur(6px)",
                       color: "#FFFFFF",
@@ -273,25 +331,26 @@ export default function AIVideoSection() {
                     }}
                   >
                     <Maximize2 size={11} />
-                    <span>Click to Watch</span>
+                    <span>Watch</span>
                   </div>
                 </div>
 
                 {/* Card Info Bottom Bar */}
                 <div
                   style={{
-                    padding: "16px 18px",
+                    padding: "14px 16px",
                     display: "flex",
                     flexDirection: "column",
                     gap: "6px",
                     background: "#FFFFFF",
+                    flexGrow: 1,
                   }}
                 >
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "8px" }}>
                     <h3
                       style={{
                         fontFamily: "var(--font-display)",
-                        fontSize: "16px",
+                        fontSize: "15px",
                         fontWeight: 700,
                         color: "#0E0E0E",
                         margin: 0,
@@ -305,11 +364,11 @@ export default function AIVideoSection() {
 
                     <span
                       style={{
-                        fontSize: "11px",
+                        fontSize: "10.5px",
                         fontWeight: 700,
                         color: isClient ? "#059669" : "var(--accent-violet)",
-                        background: isClient ? "rgba(16, 185, 129, 0.08)" : "var(--accent-violet-subtle)",
-                        padding: "2px 8px",
+                        background: isClient ? "rgba(16, 185, 129, 0.1)" : "var(--accent-violet-subtle)",
+                        padding: "2px 7px",
                         borderRadius: "4px",
                         whiteSpace: "nowrap",
                         flexShrink: 0,
@@ -321,7 +380,7 @@ export default function AIVideoSection() {
 
                   <p
                     style={{
-                      fontSize: "12.5px",
+                      fontSize: "12px",
                       color: "var(--text-muted)",
                       margin: 0,
                       lineHeight: 1.45,
@@ -345,7 +404,7 @@ export default function AIVideoSection() {
             position: "fixed",
             inset: 0,
             zIndex: 9999,
-            background: "rgba(10, 10, 14, 0.88)",
+            background: "rgba(10, 10, 14, 0.9)",
             backdropFilter: "blur(14px)",
             WebkitBackdropFilter: "blur(14px)",
             display: "flex",
@@ -360,12 +419,13 @@ export default function AIVideoSection() {
             style={{
               position: "relative",
               width: "100%",
-              maxWidth: "880px",
+              maxWidth: activeModalVideo.format === "vertical" ? "440px" : "880px",
               background: "#121218",
               borderRadius: "24px",
               overflow: "hidden",
               border: "1px solid rgba(255, 255, 255, 0.12)",
-              boxShadow: "0 30px 80px rgba(0, 0, 0, 0.7)",
+              boxShadow: "0 30px 80px rgba(0, 0, 0, 0.75)",
+              transition: "max-width 0.3s ease",
             }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -375,12 +435,12 @@ export default function AIVideoSection() {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
-                padding: "16px 22px",
+                padding: "16px 20px",
                 borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
                 background: "rgba(255, 255, 255, 0.03)",
               }}
             >
-              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "10px", minWidth: 0 }}>
                 <span
                   style={{
                     fontSize: "11px",
@@ -402,6 +462,7 @@ export default function AIVideoSection() {
                         ? "rgba(16, 185, 129, 0.4)"
                         : "rgba(88, 53, 229, 0.4)"
                     }`,
+                    flexShrink: 0,
                   }}
                 >
                   {activeModalVideo.badge}
@@ -410,10 +471,13 @@ export default function AIVideoSection() {
                 <h3
                   style={{
                     fontFamily: "var(--font-display)",
-                    fontSize: "17px",
+                    fontSize: "16px",
                     fontWeight: 700,
                     color: "#FFFFFF",
                     margin: 0,
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
                   }}
                 >
                   {activeModalVideo.title}
@@ -421,7 +485,7 @@ export default function AIVideoSection() {
               </div>
 
               {/* Header Right Actions */}
-              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "8px", flexShrink: 0 }}>
                 {/* Volume Toggle */}
                 <button
                   type="button"
@@ -474,8 +538,12 @@ export default function AIVideoSection() {
               style={{
                 position: "relative",
                 width: "100%",
-                aspectRatio: "16 / 9",
+                aspectRatio: activeModalVideo.format === "vertical" ? "9 / 16" : "16 / 9",
+                maxHeight: activeModalVideo.format === "vertical" ? "75vh" : "60vh",
                 background: "#000000",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
               }}
             >
               <video
@@ -495,7 +563,7 @@ export default function AIVideoSection() {
             {/* Modal Footer Description */}
             <div
               style={{
-                padding: "16px 22px",
+                padding: "14px 20px",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
@@ -507,7 +575,7 @@ export default function AIVideoSection() {
               <p
                 style={{
                   margin: 0,
-                  fontSize: "13.5px",
+                  fontSize: "13px",
                   color: "rgba(255, 255, 255, 0.7)",
                 }}
               >
@@ -516,7 +584,7 @@ export default function AIVideoSection() {
 
               <span
                 style={{
-                  fontSize: "12px",
+                  fontSize: "11.5px",
                   color: "rgba(255, 255, 255, 0.4)",
                   display: "flex",
                   alignItems: "center",

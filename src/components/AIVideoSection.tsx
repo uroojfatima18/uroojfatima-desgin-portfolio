@@ -19,7 +19,8 @@ interface VideoItem {
 // Media CDN URL helper for GitHub LFS videos deployed on Vercel
 const LFS_BASE = "https://media.githubusercontent.com/media/uroojfatima18/uroojfatima-desgin-portfolio/main/public";
 
-const VIDEOS: VideoItem[] = [
+// Horizontal (YouTube / 16:9) Videos Row
+const YOUTUBE_VIDEOS: VideoItem[] = [
   {
     id: "v1-profile",
     title: "How AI Agent Works",
@@ -33,18 +34,6 @@ const VIDEOS: VideoItem[] = [
     poster: "/assets/videos/without_sub_poster.jpg",
   },
   {
-    id: "v1-tiktok",
-    title: "Variant 1 TikTok",
-    category: "Client Work",
-    badge: "Client Work",
-    badgeType: "client",
-    format: "vertical",
-    description: "Short-form vertical storytelling • 9:16 TikTok Reel edit",
-    src: `${LFS_BASE}/assets/videos/AI-Story%20telling%20videos/variant%201%20tiktok.mp4`,
-    previewSrc: "/assets/videos/previews/v1_tiktok_preview.mp4",
-    poster: "/assets/videos/AI-Story%20telling%20videos/v1_tiktok_poster.jpg",
-  },
-  {
     id: "v1-youtube",
     title: "Variant 1 YouTube",
     category: "Client Work",
@@ -55,18 +44,6 @@ const VIDEOS: VideoItem[] = [
     src: `${LFS_BASE}/assets/videos/AI-Story%20telling%20videos/variant%201%20yt.mp4`,
     previewSrc: "/assets/videos/previews/v1_yt_preview.mp4",
     poster: "/assets/videos/AI-Story%20telling%20videos/v1_yt_poster.jpg",
-  },
-  {
-    id: "v2-tiktok",
-    title: "Variant 2 TikTok",
-    category: "Client Work",
-    badge: "Client Work",
-    badgeType: "client",
-    format: "vertical",
-    description: "Short-form vertical storytelling • 9:16 TikTok Reel edit",
-    src: `${LFS_BASE}/assets/videos/AI-Story%20telling%20videos/variant%202%20tiktok.mp4`,
-    previewSrc: "/assets/videos/previews/v2_tiktok_preview.mp4",
-    poster: "/assets/videos/AI-Story%20telling%20videos/v2_tiktok_poster.jpg",
   },
   {
     id: "v3-youtube",
@@ -94,14 +71,44 @@ const VIDEOS: VideoItem[] = [
   },
 ];
 
+// Vertical (TikTok / 9:16) Reels Row
+const TIKTOK_VIDEOS: VideoItem[] = [
+  {
+    id: "v1-tiktok",
+    title: "Variant 1 TikTok",
+    category: "Client Work",
+    badge: "Client Work",
+    badgeType: "client",
+    format: "vertical",
+    description: "Short-form vertical storytelling • 9:16 TikTok Reel edit",
+    src: `${LFS_BASE}/assets/videos/AI-Story%20telling%20videos/variant%201%20tiktok.mp4`,
+    previewSrc: "/assets/videos/previews/v1_tiktok_preview.mp4",
+    poster: "/assets/videos/AI-Story%20telling%20videos/v1_tiktok_poster.jpg",
+  },
+  {
+    id: "v2-tiktok",
+    title: "Variant 2 TikTok",
+    category: "Client Work",
+    badge: "Client Work",
+    badgeType: "client",
+    format: "vertical",
+    description: "Short-form vertical storytelling • 9:16 TikTok Reel edit",
+    src: `${LFS_BASE}/assets/videos/AI-Story%20telling%20videos/variant%202%20tiktok.mp4`,
+    previewSrc: "/assets/videos/previews/v2_tiktok_preview.mp4",
+    poster: "/assets/videos/AI-Story%20telling%20videos/v2_tiktok_poster.jpg",
+  },
+];
+
 export default function AIVideoSection() {
   const [activeModalVideo, setActiveModalVideo] = useState<VideoItem | null>(null);
-  const [isHoverPaused, setIsHoverPaused] = useState(false);
+  const [isHoverPausedYT, setIsHoverPausedYT] = useState(false);
+  const [isHoverPausedTT, setIsHoverPausedTT] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const modalVideoRef = useRef<HTMLVideoElement | null>(null);
 
   // Repeat items for seamless horizontal scroll
-  const loopedVideos = [...VIDEOS, ...VIDEOS];
+  const loopedYTVideos = [...YOUTUBE_VIDEOS, ...YOUTUBE_VIDEOS, ...YOUTUBE_VIDEOS];
+  const loopedTTVideos = [...TIKTOK_VIDEOS, ...TIKTOK_VIDEOS, ...TIKTOK_VIDEOS, ...TIKTOK_VIDEOS];
 
   // When modal opens, auto-play with sound handling
   useEffect(() => {
@@ -111,7 +118,6 @@ export default function AIVideoSection() {
       const playPromise = v.play();
       if (playPromise !== undefined) {
         playPromise.catch(() => {
-          // If browser restricts unmuted autoplay, mute and play
           v.muted = true;
           setIsMuted(true);
           v.play().catch(() => {});
@@ -132,6 +138,237 @@ export default function AIVideoSection() {
   const handleCardClick = (video: VideoItem) => {
     setIsMuted(false);
     setActiveModalVideo(video);
+  };
+
+  const renderCard = (video: VideoItem, idx: number) => {
+    const isClient = video.badgeType === "client";
+    const isVertical = video.format === "vertical";
+
+    return (
+      <div
+        key={`${video.id}-${idx}`}
+        className={`video-marquee-card ${isVertical ? "is-vertical" : "is-horizontal"}`}
+        style={{
+          width: isVertical ? "260px" : "410px",
+          cursor: "pointer",
+        }}
+        onClick={() => handleCardClick(video)}
+      >
+        {/* Video Preview Box */}
+        <div
+          className="video-card-screen-wrap group"
+          style={{
+            aspectRatio: isVertical ? "9 / 16" : "16 / 9",
+            maxHeight: isVertical ? "420px" : "235px",
+            position: "relative",
+          }}
+        >
+          <video
+            src={video.previewSrc}
+            poster={video.poster}
+            muted
+            loop
+            playsInline
+            autoPlay
+            preload="auto"
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              pointerEvents: "none",
+            }}
+          />
+
+          {/* Dark gradient vignette overlay */}
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              background:
+                "linear-gradient(to top, rgba(14, 14, 18, 0.8) 0%, rgba(14, 14, 18, 0.05) 50%, rgba(14, 14, 18, 0.4) 100%)",
+              pointerEvents: "none",
+            }}
+          />
+
+          {/* Badges Bar (Category Pill + Format Tag) */}
+          <div
+            style={{
+              position: "absolute",
+              top: "12px",
+              left: "12px",
+              right: "12px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: "6px",
+              zIndex: 3,
+              pointerEvents: "none",
+            }}
+          >
+            {/* Category Pill Tag */}
+            <div
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "5px",
+                padding: "5px 11px",
+                borderRadius: "var(--radius-full)",
+                fontSize: "11px",
+                fontWeight: 700,
+                letterSpacing: "0.03em",
+                backdropFilter: "blur(12px)",
+                WebkitBackdropFilter: "blur(12px)",
+                background: isClient
+                  ? "linear-gradient(135deg, rgba(16, 185, 129, 0.92), rgba(5, 150, 105, 0.92))"
+                  : "linear-gradient(135deg, rgba(88, 53, 229, 0.92), rgba(124, 58, 237, 0.92))",
+                color: "#FFFFFF",
+                boxShadow: isClient
+                  ? "0 4px 14px rgba(16, 185, 129, 0.35)"
+                  : "0 4px 14px rgba(88, 53, 229, 0.35)",
+              }}
+            >
+              {isClient ? <Briefcase size={12} /> : <UserCheck size={12} />}
+              <span>{video.badge}</span>
+            </div>
+
+            {/* Format Tag */}
+            <div
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "4px",
+                padding: "4px 9px",
+                borderRadius: "6px",
+                fontSize: "10px",
+                fontWeight: 700,
+                letterSpacing: "0.04em",
+                textTransform: "uppercase",
+                backdropFilter: "blur(10px)",
+                WebkitBackdropFilter: "blur(10px)",
+                background: isVertical ? "rgba(0, 0, 0, 0.7)" : "rgba(0, 0, 0, 0.6)",
+                color: isVertical ? "#38BDF8" : "#FBBF24",
+                border: isVertical
+                  ? "1px solid rgba(56, 189, 248, 0.35)"
+                  : "1px solid rgba(251, 191, 36, 0.35)",
+              }}
+            >
+              {isVertical ? <Smartphone size={11} /> : <Monitor size={11} />}
+              <span>{isVertical ? "9:16 Reel" : "16:9 YT"}</span>
+            </div>
+          </div>
+
+          {/* Floating Play Icon Overlay */}
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              zIndex: 2,
+              pointerEvents: "none",
+            }}
+          >
+            <div
+              style={{
+                width: "46px",
+                height: "46px",
+                borderRadius: "50%",
+                background: "rgba(255, 255, 255, 0.92)",
+                backdropFilter: "blur(8px)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "#0E0E0E",
+                boxShadow: "0 8px 24px rgba(0, 0, 0, 0.35)",
+                transition: "all 0.25s ease",
+              }}
+            >
+              <Play size={19} fill="#0E0E0E" style={{ marginLeft: "2px" }} />
+            </div>
+          </div>
+
+          {/* Expand badge at bottom right */}
+          <div
+            style={{
+              position: "absolute",
+              bottom: "10px",
+              right: "10px",
+              background: "rgba(0, 0, 0, 0.65)",
+              backdropFilter: "blur(6px)",
+              color: "#FFFFFF",
+              padding: "4px 8px",
+              borderRadius: "6px",
+              fontSize: "10.5px",
+              fontWeight: 600,
+              display: "flex",
+              alignItems: "center",
+              gap: "4px",
+              zIndex: 3,
+              pointerEvents: "none",
+            }}
+          >
+            <Maximize2 size={11} />
+            <span>Watch</span>
+          </div>
+        </div>
+
+        {/* Card Info Bottom Bar */}
+        <div
+          style={{
+            padding: "13px 15px",
+            display: "flex",
+            flexDirection: "column",
+            gap: "5px",
+            background: "#FFFFFF",
+            flexGrow: 1,
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "8px" }}>
+            <h3
+              style={{
+                fontFamily: "var(--font-display)",
+                fontSize: "15px",
+                fontWeight: 700,
+                color: "#0E0E0E",
+                margin: 0,
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {video.title}
+            </h3>
+
+            <span
+              style={{
+                fontSize: "10px",
+                fontWeight: 700,
+                color: isClient ? "#059669" : "var(--accent-violet)",
+                background: isClient ? "rgba(16, 185, 129, 0.1)" : "var(--accent-violet-subtle)",
+                padding: "2px 7px",
+                borderRadius: "4px",
+                whiteSpace: "nowrap",
+                flexShrink: 0,
+              }}
+            >
+              {isClient ? "Client Work" : "Own Profile"}
+            </span>
+          </div>
+
+          <p
+            style={{
+              fontSize: "12px",
+              color: "var(--text-muted)",
+              margin: 0,
+              lineHeight: 1.45,
+            }}
+          >
+            {video.description}
+          </p>
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -156,257 +393,63 @@ export default function AIVideoSection() {
             </span>
             <span style={{ fontSize: "12px", color: "var(--text-light)" }}>•</span>
             <span style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 500 }}>
-              Reels &amp; YouTube Showcase
+              YouTube &amp; TikTok Showcase
             </span>
           </div>
           <h2 className="section-title">AI VIDEO GENERATION</h2>
         </div>
       </div>
 
-      {/* Horizontal Infinite Marquee Carousel */}
-      <div
-        className="videos-marquee-container"
-        onMouseEnter={() => setIsHoverPaused(true)}
-        onMouseLeave={() => setIsHoverPaused(false)}
-      >
+      {/* Row 1: YouTube Videos Marquee (Horizontal 16:9) */}
+      <div style={{ marginBottom: "24px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "12px", padding: "0 4px" }}>
+          <Monitor size={15} style={{ color: "#F59E0B" }} />
+          <span style={{ fontSize: "13px", fontWeight: 700, color: "var(--text-main)", letterSpacing: "0.02em" }}>
+            Cinematic &amp; YouTube Edits (16:9)
+          </span>
+        </div>
         <div
-          className="videos-marquee-track"
-          style={{
-            animationPlayState: isHoverPaused ? "paused" : "running",
-            display: "flex",
-            alignItems: "stretch",
-          }}
+          className="videos-marquee-container"
+          onMouseEnter={() => setIsHoverPausedYT(true)}
+          onMouseLeave={() => setIsHoverPausedYT(false)}
         >
-          {loopedVideos.map((video, idx) => {
-            const isClient = video.badgeType === "client";
-            const isVertical = video.format === "vertical";
+          <div
+            className="videos-marquee-track"
+            style={{
+              animationPlayState: isHoverPausedYT ? "paused" : "running",
+              display: "flex",
+              alignItems: "stretch",
+            }}
+          >
+            {loopedYTVideos.map((video, idx) => renderCard(video, idx))}
+          </div>
+        </div>
+      </div>
 
-            return (
-              <div
-                key={`${video.id}-${idx}`}
-                className={`video-marquee-card ${isVertical ? "is-vertical" : "is-horizontal"}`}
-                style={{
-                  width: isVertical ? "270px" : "420px",
-                  cursor: "pointer",
-                }}
-                onClick={() => handleCardClick(video)}
-              >
-                {/* Video Preview Box */}
-                <div
-                  className="video-card-screen-wrap group"
-                  style={{
-                    aspectRatio: isVertical ? "9 / 16" : "16 / 9",
-                    maxHeight: isVertical ? "440px" : "240px",
-                    position: "relative",
-                  }}
-                >
-                  <video
-                    src={video.previewSrc}
-                    poster={video.poster}
-                    muted
-                    loop
-                    playsInline
-                    autoPlay
-                    preload="auto"
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                      pointerEvents: "none",
-                    }}
-                  />
-
-                  {/* Dark gradient vignette overlay */}
-                  <div
-                    style={{
-                      position: "absolute",
-                      inset: 0,
-                      background:
-                        "linear-gradient(to top, rgba(14, 14, 18, 0.8) 0%, rgba(14, 14, 18, 0.05) 50%, rgba(14, 14, 18, 0.4) 100%)",
-                      pointerEvents: "none",
-                    }}
-                  />
-
-                  {/* Badges Bar (Category Pill + Format Tag) */}
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: "12px",
-                      left: "12px",
-                      right: "12px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      gap: "6px",
-                      zIndex: 3,
-                      pointerEvents: "none",
-                    }}
-                  >
-                    {/* Category Pill Tag */}
-                    <div
-                      style={{
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: "5px",
-                        padding: "5px 11px",
-                        borderRadius: "var(--radius-full)",
-                        fontSize: "11px",
-                        fontWeight: 700,
-                        letterSpacing: "0.03em",
-                        backdropFilter: "blur(12px)",
-                        WebkitBackdropFilter: "blur(12px)",
-                        background: isClient
-                          ? "linear-gradient(135deg, rgba(16, 185, 129, 0.92), rgba(5, 150, 105, 0.92))"
-                          : "linear-gradient(135deg, rgba(88, 53, 229, 0.92), rgba(124, 58, 237, 0.92))",
-                        color: "#FFFFFF",
-                        boxShadow: isClient
-                          ? "0 4px 14px rgba(16, 185, 129, 0.35)"
-                          : "0 4px 14px rgba(88, 53, 229, 0.35)",
-                      }}
-                    >
-                      {isClient ? <Briefcase size={12} /> : <UserCheck size={12} />}
-                      <span>{video.badge}</span>
-                    </div>
-
-                    {/* Format Tag (TikTok Reel vs YouTube) */}
-                    <div
-                      style={{
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: "4px",
-                        padding: "4px 9px",
-                        borderRadius: "6px",
-                        fontSize: "10px",
-                        fontWeight: 700,
-                        letterSpacing: "0.04em",
-                        textTransform: "uppercase",
-                        backdropFilter: "blur(10px)",
-                        WebkitBackdropFilter: "blur(10px)",
-                        background: isVertical ? "rgba(0, 0, 0, 0.7)" : "rgba(0, 0, 0, 0.6)",
-                        color: isVertical ? "#38BDF8" : "#FBBF24",
-                        border: isVertical
-                          ? "1px solid rgba(56, 189, 248, 0.35)"
-                          : "1px solid rgba(251, 191, 36, 0.35)",
-                      }}
-                    >
-                      {isVertical ? <Smartphone size={11} /> : <Monitor size={11} />}
-                      <span>{isVertical ? "9:16 Reel" : "16:9 YT"}</span>
-                    </div>
-                  </div>
-
-                  {/* Floating Play Icon Overlay */}
-                  <div
-                    style={{
-                      position: "absolute",
-                      inset: 0,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      zIndex: 2,
-                      pointerEvents: "none",
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: "48px",
-                        height: "48px",
-                        borderRadius: "50%",
-                        background: "rgba(255, 255, 255, 0.92)",
-                        backdropFilter: "blur(8px)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        color: "#0E0E0E",
-                        boxShadow: "0 8px 24px rgba(0, 0, 0, 0.35)",
-                        transition: "all 0.25s ease",
-                      }}
-                    >
-                      <Play size={20} fill="#0E0E0E" style={{ marginLeft: "2px" }} />
-                    </div>
-                  </div>
-
-                  {/* Expand badge at bottom right */}
-                  <div
-                    style={{
-                      position: "absolute",
-                      bottom: "10px",
-                      right: "10px",
-                      background: "rgba(0, 0, 0, 0.65)",
-                      backdropFilter: "blur(6px)",
-                      color: "#FFFFFF",
-                      padding: "4px 8px",
-                      borderRadius: "6px",
-                      fontSize: "10.5px",
-                      fontWeight: 600,
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "4px",
-                      zIndex: 3,
-                      pointerEvents: "none",
-                    }}
-                  >
-                    <Maximize2 size={11} />
-                    <span>Watch</span>
-                  </div>
-                </div>
-
-                {/* Card Info Bottom Bar */}
-                <div
-                  style={{
-                    padding: "14px 16px",
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "6px",
-                    background: "#FFFFFF",
-                    flexGrow: 1,
-                  }}
-                >
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "8px" }}>
-                    <h3
-                      style={{
-                        fontFamily: "var(--font-display)",
-                        fontSize: "15px",
-                        fontWeight: 700,
-                        color: "#0E0E0E",
-                        margin: 0,
-                        whiteSpace: "nowrap",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                      }}
-                    >
-                      {video.title}
-                    </h3>
-
-                    <span
-                      style={{
-                        fontSize: "10.5px",
-                        fontWeight: 700,
-                        color: isClient ? "#059669" : "var(--accent-violet)",
-                        background: isClient ? "rgba(16, 185, 129, 0.1)" : "var(--accent-violet-subtle)",
-                        padding: "2px 7px",
-                        borderRadius: "4px",
-                        whiteSpace: "nowrap",
-                        flexShrink: 0,
-                      }}
-                    >
-                      {isClient ? "Client Work" : "Own Profile"}
-                    </span>
-                  </div>
-
-                  <p
-                    style={{
-                      fontSize: "12px",
-                      color: "var(--text-muted)",
-                      margin: 0,
-                      lineHeight: 1.45,
-                    }}
-                  >
-                    {video.description}
-                  </p>
-                </div>
-              </div>
-            );
-          })}
+      {/* Row 2: TikTok Videos Marquee (Vertical 9:16 Reels) */}
+      <div>
+        <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "12px", padding: "0 4px" }}>
+          <Smartphone size={15} style={{ color: "#38BDF8" }} />
+          <span style={{ fontSize: "13px", fontWeight: 700, color: "var(--text-main)", letterSpacing: "0.02em" }}>
+            TikTok &amp; Short-Form Reels (9:16)
+          </span>
+        </div>
+        <div
+          className="videos-marquee-container"
+          onMouseEnter={() => setIsHoverPausedTT(true)}
+          onMouseLeave={() => setIsHoverPausedTT(false)}
+        >
+          <div
+            className="videos-marquee-track"
+            style={{
+              animationPlayState: isHoverPausedTT ? "paused" : "running",
+              display: "flex",
+              alignItems: "stretch",
+              animationDuration: "32s",
+            }}
+          >
+            {loopedTTVideos.map((video, idx) => renderCard(video, idx))}
+          </div>
         </div>
       </div>
 
@@ -575,7 +618,6 @@ export default function AIVideoSection() {
                   objectFit: "contain",
                 }}
               >
-                {/* Fallback to preview stream if CDN is delayed */}
                 <source src={activeModalVideo.src} type="video/mp4" />
                 <source src={activeModalVideo.previewSrc} type="video/mp4" />
               </video>

@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { Play, Pause, Maximize2, Sparkles, Film, X, Volume2, VolumeX, Briefcase, UserCheck } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { Play, Maximize2, X, Volume2, VolumeX, Briefcase, UserCheck } from "lucide-react";
 
 interface VideoItem {
   id: string;
@@ -11,6 +11,8 @@ interface VideoItem {
   badgeType: "profile" | "client";
   description: string;
   src: string;
+  previewSrc: string;
+  poster: string;
 }
 
 const VIDEOS: VideoItem[] = [
@@ -22,6 +24,8 @@ const VIDEOS: VideoItem[] = [
     badgeType: "profile",
     description: "Generative AI video styling, digital identity & cinematic motion",
     src: "/assets/videos/final-without-subtitle.mp4",
+    previewSrc: "/assets/videos/previews/v1_profile_preview.mp4",
+    poster: "/assets/videos/without_sub_poster.jpg",
   },
   {
     id: "v1-tiktok",
@@ -31,6 +35,8 @@ const VIDEOS: VideoItem[] = [
     badgeType: "profile",
     description: "Short-form storytelling video • TikTok edit",
     src: "/assets/videos/AI-Story%20telling%20videos/variant%201%20tiktok.mp4",
+    previewSrc: "/assets/videos/previews/v1_tiktok_preview.mp4",
+    poster: "/assets/videos/AI-Story%20telling%20videos/v1_tiktok_poster.jpg",
   },
   {
     id: "v1-youtube",
@@ -40,6 +46,8 @@ const VIDEOS: VideoItem[] = [
     badgeType: "profile",
     description: "Long-form storytelling video • YouTube edit",
     src: "/assets/videos/AI-Story%20telling%20videos/variant%201%20yt.mp4",
+    previewSrc: "/assets/videos/previews/v1_yt_preview.mp4",
+    poster: "/assets/videos/AI-Story%20telling%20videos/v1_yt_poster.jpg",
   },
   {
     id: "v2-tiktok",
@@ -49,6 +57,8 @@ const VIDEOS: VideoItem[] = [
     badgeType: "profile",
     description: "Short-form storytelling video • TikTok edit",
     src: "/assets/videos/AI-Story%20telling%20videos/variant%202%20tiktok.mp4",
+    previewSrc: "/assets/videos/previews/v2_tiktok_preview.mp4",
+    poster: "/assets/videos/AI-Story%20telling%20videos/v2_tiktok_poster.jpg",
   },
   {
     id: "v3-youtube",
@@ -58,6 +68,8 @@ const VIDEOS: VideoItem[] = [
     badgeType: "profile",
     description: "Long-form storytelling video • YouTube edit",
     src: "/assets/videos/AI-Story%20telling%20videos/variant%202%20yt.mp4",
+    previewSrc: "/assets/videos/previews/v2_yt_preview.mp4",
+    poster: "/assets/videos/AI-Story%20telling%20videos/v2_yt_poster.jpg",
   },
   {
     id: "v4-profile",
@@ -67,15 +79,44 @@ const VIDEOS: VideoItem[] = [
     badgeType: "profile",
     description: "Prompt  -> Context -> Loop -> Graph -> Harness",
     src: "/assets/videos/prompt-engineering.mp4",
+    previewSrc: "/assets/videos/previews/v4_profile_preview.mp4",
+    poster: "/assets/videos/prompt_eng_poster.jpg",
   },
 ];
 
 export default function AIVideoSection() {
   const [activeModalVideo, setActiveModalVideo] = useState<VideoItem | null>(null);
   const [isHoverPaused, setIsHoverPaused] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
+  const modalVideoRef = useRef<HTMLVideoElement | null>(null);
 
-  // Repeat items to ensure seamless infinite looping marquee
-  const loopedVideos = [...VIDEOS, ...VIDEOS, ...VIDEOS];
+  // Repeat items for seamless horizontal scroll
+  const loopedVideos = [...VIDEOS, ...VIDEOS];
+
+  // When modal opens, make sure full video plays with sound
+  useEffect(() => {
+    if (activeModalVideo && modalVideoRef.current) {
+      modalVideoRef.current.currentTime = 0;
+      modalVideoRef.current.muted = isMuted;
+      modalVideoRef.current.play().catch(() => {
+        // Fallback if browser requires user interaction for unmuted audio
+        if (modalVideoRef.current) {
+          modalVideoRef.current.muted = true;
+          setIsMuted(true);
+          modalVideoRef.current.play().catch(() => {});
+        }
+      });
+    }
+  }, [activeModalVideo]);
+
+  const toggleSound = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (modalVideoRef.current) {
+      const nextMuted = !modalVideoRef.current.muted;
+      modalVideoRef.current.muted = nextMuted;
+      setIsMuted(nextMuted);
+    }
+  };
 
   return (
     <section id="ai-video" style={{ width: "100%", margin: "0 auto", padding: "10px 0" }}>
@@ -106,7 +147,7 @@ export default function AIVideoSection() {
         </div>
       </div>
 
-      {/* Horizontal Infinite Marquee Carousel (Like Posters) */}
+      {/* Horizontal Infinite Marquee Carousel */}
       <div
         className="videos-marquee-container"
         onMouseEnter={() => setIsHoverPaused(true)}
@@ -124,17 +165,21 @@ export default function AIVideoSection() {
               <div
                 key={`${video.id}-${idx}`}
                 className="video-marquee-card"
-                onClick={() => setActiveModalVideo(video)}
+                onClick={() => {
+                  setIsMuted(false);
+                  setActiveModalVideo(video);
+                }}
               >
                 {/* Video Preview Box */}
                 <div className="video-card-screen-wrap group">
                   <video
-                    src={video.src}
+                    src={video.previewSrc}
+                    poster={video.poster}
                     muted
                     loop
                     playsInline
                     autoPlay
-                    preload="metadata"
+                    preload="auto"
                   />
 
                   {/* Dark gradient vignette overlay */}
@@ -143,7 +188,7 @@ export default function AIVideoSection() {
                       position: "absolute",
                       inset: 0,
                       background:
-                        "linear-gradient(to top, rgba(14, 14, 18, 0.75) 0%, rgba(14, 14, 18, 0.1) 50%, rgba(14, 14, 18, 0.4) 100%)",
+                        "linear-gradient(to top, rgba(14, 14, 18, 0.75) 0%, rgba(14, 14, 18, 0.05) 50%, rgba(14, 14, 18, 0.35) 100%)",
                       pointerEvents: "none",
                     }}
                   />
@@ -194,7 +239,7 @@ export default function AIVideoSection() {
                         width: "48px",
                         height: "48px",
                         borderRadius: "50%",
-                        background: "rgba(255, 255, 255, 0.9)",
+                        background: "rgba(255, 255, 255, 0.92)",
                         backdropFilter: "blur(8px)",
                         display: "flex",
                         alignItems: "center",
@@ -375,27 +420,53 @@ export default function AIVideoSection() {
                 </h3>
               </div>
 
-              {/* Close Button */}
-              <button
-                type="button"
-                onClick={() => setActiveModalVideo(null)}
-                style={{
-                  background: "rgba(255, 255, 255, 0.1)",
-                  border: "none",
-                  borderRadius: "50%",
-                  width: "36px",
-                  height: "36px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  color: "#FFFFFF",
-                  cursor: "pointer",
-                  transition: "background 0.2s ease",
-                }}
-                aria-label="Close modal"
-              >
-                <X size={18} />
-              </button>
+              {/* Header Right Actions */}
+              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                {/* Volume Toggle */}
+                <button
+                  type="button"
+                  onClick={toggleSound}
+                  style={{
+                    background: isMuted ? "rgba(239, 68, 68, 0.2)" : "rgba(255, 255, 255, 0.1)",
+                    border: isMuted ? "1px solid rgba(239, 68, 68, 0.4)" : "1px solid rgba(255, 255, 255, 0.15)",
+                    borderRadius: "50%",
+                    width: "36px",
+                    height: "36px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    color: isMuted ? "#F87171" : "#FFFFFF",
+                    cursor: "pointer",
+                    transition: "all 0.2s ease",
+                  }}
+                  title={isMuted ? "Unmute" : "Mute"}
+                  aria-label={isMuted ? "Unmute" : "Mute"}
+                >
+                  {isMuted ? <VolumeX size={17} /> : <Volume2 size={17} />}
+                </button>
+
+                {/* Close Button */}
+                <button
+                  type="button"
+                  onClick={() => setActiveModalVideo(null)}
+                  style={{
+                    background: "rgba(255, 255, 255, 0.1)",
+                    border: "none",
+                    borderRadius: "50%",
+                    width: "36px",
+                    height: "36px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    color: "#FFFFFF",
+                    cursor: "pointer",
+                    transition: "background 0.2s ease",
+                  }}
+                  aria-label="Close modal"
+                >
+                  <X size={18} />
+                </button>
+              </div>
             </div>
 
             {/* Video Player in Modal */}
@@ -408,9 +479,10 @@ export default function AIVideoSection() {
               }}
             >
               <video
+                ref={modalVideoRef}
                 src={activeModalVideo.src}
+                poster={activeModalVideo.poster}
                 controls
-                autoPlay
                 playsInline
                 style={{
                   width: "100%",
@@ -451,7 +523,6 @@ export default function AIVideoSection() {
                   gap: "6px",
                 }}
               >
-                <Film size={13} />
                 <span>Urooj Fatima • Generative Production</span>
               </span>
             </div>
